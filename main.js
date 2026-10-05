@@ -3,7 +3,7 @@ import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/js
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x080d14);
-scene.fog = new THREE.Fog(0x080d14, 12, 58);
+scene.fog = new THREE.Fog(0x080d14, 22, 95);
 
 const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 120);
 camera.position.set(0, 1.65, 0);
@@ -91,7 +91,7 @@ function createRoom(index, data) {
   floor.position.y = -0.08;
   g.add(floor);
 
-  const wallMat = material(0x202a35);
+  const wallMat = material(0x34404d, 0.85);
   const sideL = new THREE.Mesh(new THREE.BoxGeometry(0.22, ROOM_HEIGHT, ROOM_LENGTH), wallMat);
   sideL.position.set(-ROOM_WIDTH / 2, ROOM_HEIGHT / 2, 0);
   g.add(sideL);
@@ -100,23 +100,27 @@ function createRoom(index, data) {
   sideR.position.x = ROOM_WIDTH / 2;
   g.add(sideR);
 
-  const back = new THREE.Mesh(new THREE.BoxGeometry(ROOM_WIDTH, ROOM_HEIGHT, 0.22), material(data.color));
+  const back = new THREE.Mesh(new THREE.BoxGeometry(ROOM_WIDTH, ROOM_HEIGHT, 0.22), material(0x465564, 0.8));
   back.position.set(0, ROOM_HEIGHT / 2, -ROOM_LENGTH / 2);
   g.add(back);
+
+  const roomLight = new THREE.PointLight(data.color, 9, 15, 2);
+  roomLight.position.set(0, 3.5, -1.5);
+  g.add(roomLight);
 
   const ceiling = new THREE.Mesh(new THREE.BoxGeometry(ROOM_WIDTH, 0.18, ROOM_LENGTH), material(0x111821));
   ceiling.position.y = ROOM_HEIGHT;
   g.add(ceiling);
 
   const portal = new THREE.Mesh(
-    new THREE.BoxGeometry(3.2, 3.2, 0.3),
+    new THREE.BoxGeometry(4.2, 3.8, 0.28),
     material(data.color, 0.45, 0.15)
   );
   portal.position.set(0, 1.6, ROOM_LENGTH / 2);
   g.add(portal);
 
   const innerPortal = new THREE.Mesh(
-    new THREE.BoxGeometry(2.8, 2.8, 0.34),
+    new THREE.BoxGeometry(3.7, 3.35, 0.34),
     material(0x090d14, 0.35, 0)
   );
   innerPortal.position.set(0, 1.55, ROOM_LENGTH / 2 - 0.18);
@@ -130,7 +134,7 @@ function createRoom(index, data) {
     width: 4.8, height: 0.7, font: '400 30px Arial', background: 'rgba(10,16,24,.82)'
   });
 
-  // Placeholder plinths: these will later become photos, objects, documents and 3D pieces.
+  // Exhibition islands: these will later become photos, objects, documents and 3D pieces.
   for (const x of [-2.25, 0, 2.25]) {
     const plinth = new THREE.Mesh(
       new THREE.BoxGeometry(1.35, 0.9, 1.35),
@@ -140,7 +144,7 @@ function createRoom(index, data) {
     g.add(plinth);
 
     const object = new THREE.Mesh(
-      new THREE.BoxGeometry(0.85, 0.65, 0.08),
+      new THREE.BoxGeometry(0.95, 0.75, 0.18),
       material(data.color, 0.5, 0.15)
     );
     object.position.set(x, 1.22, -0.9);
@@ -172,7 +176,7 @@ function createCorridor(index, from, to) {
   floor.position.y = -0.06;
   g.add(floor);
 
-  const wallMat = material(0x161e27);
+  const wallMat = material(0x202a34, 0.9);
   for (const x of [-ROOM_WIDTH / 2, ROOM_WIDTH / 2]) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(0.18, ROOM_HEIGHT, CORRIDOR_LENGTH), wallMat);
     wall.position.set(x, ROOM_HEIGHT / 2, 0);
@@ -250,7 +254,7 @@ function pauseAtRoom() {
     pauseTimer = setTimeout(() => {
       paused = false;
       status.textContent = 'RECORRIDO';
-    }, 4200);
+    }, 6000);
   } else {
     running = false;
     status.textContent = 'FINAL';
@@ -260,7 +264,7 @@ function pauseAtRoom() {
 function updateRide(dt) {
   if (!running || paused) return;
 
-  speed = THREE.MathUtils.damp(speed, 0.78, 1.6, dt);
+  speed = THREE.MathUtils.damp(speed, 0.48, 1.8, dt);
   world.position.z += speed * dt;
 
   const travelled = world.position.z;
